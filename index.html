@@ -59,8 +59,9 @@
     <h2>Deck A</h2>
     <div id="playerA"></div>
     <input id="urlA" type="text" placeholder="Ex: https://www.youtube.com/watch?v=_JQiEs32SqQ">
-    <button onclick="loadVideoFromInput('A')">Carregar</button>
-    <button onclick="searchYoutube('A')">Buscar no YouTube</button>
+    <div style="display:flex; gap: 10px; justify-content:center; flex-wrap: wrap;">
+      <button onclick="loadVideoFromInput('A')">Carregar</button>
+    </div>
     <br>
     <button onclick="playerA.playVideo()">Play</button>
     <button onclick="playerA.pauseVideo()">Pause</button>
@@ -70,8 +71,9 @@
     <h2>Deck B</h2>
     <div id="playerB"></div>
     <input id="urlB" type="text" placeholder="Ex: https://www.youtube.com/watch?v=_JQiEs32SqQ">
-    <button onclick="loadVideoFromInput('B')">Carregar</button>
-    <button onclick="searchYoutube('B')">Buscar no YouTube</button>
+    <div style="display:flex; gap: 10px; justify-content:center; flex-wrap: wrap;">
+      <button onclick="loadVideoFromInput('B')">Carregar</button>
+    </div>
     <br>
     <button onclick="playerB.playVideo()">Play</button>
     <button onclick="playerB.pauseVideo()">Pause</button>
@@ -118,12 +120,6 @@
       } else {
         alert('Link inválido! Por favor, cole um link completo do YouTube.');
       }
-    }
-
-    function searchYoutube(deck) {
-      const query = document.getElementById('url' + deck).value;
-      const searchUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`;
-      window.open(searchUrl, '_blank');
     }
 
     function updateVolumes() {
