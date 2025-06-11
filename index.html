@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>DJ YouTube Mixer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: #fff;
+      text-align: center;
+      padding: 20px;
+    }
+
+    iframe {
+      width: 100%;
+      max-width: 400px;
+      height: 225px;
+      margin: 10px;
+    }
+
+    .deck {
+      display: inline-block;
+      margin: 20px;
+    }
+
+    input, select {
+      width: 90%;
+      padding: 8px;
+      margin: 5px 0;
+    }
+
+    button {
+      margin: 5px;
+      padding: 8px 12px;
+      cursor: pointer;
+    }
+
+    .crossfade {
+      margin-top: 30px;
+    }
+
+    input[type="range"] {
+      width: 80%;
+    }
+
+    @media (max-width: 768px) {
+      .deck {
+        display: block;
+        margin: 10px auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>DJ YouTube Mixer 🎧</h1>
+
+  <div class="deck">
+    <h2>Deck A</h2>
+    <div id="playerA"></div>
+    <input id="urlA" type="text" placeholder="Cole o link do vídeo aqui">
+    <button onclick="searchAndLoad('A')">Buscar & Carregar</button>
+    <br>
+    <button onclick="playerA.playVideo()">Play</button>
+    <button onclick="playerA.pauseVideo()">Pause</button>
+  </div>
+
+  <div class="deck">
+    <h2>Deck B</h2>
+    <div id="playerB"></div>
+    <input id="urlB" type="text" placeholder="Cole o link do vídeo aqui">
+    <button onclick="searchAndLoad('B')">Buscar & Carregar</button>
+    <br>
+    <button onclick="playerB.playVideo()">Play</button>
+    <button onclick="playerB.pauseVideo()">Pause</button>
+  </div>
+
+  <div class="crossfade">
+    <h3>Crossfade 🎚️</h3>
+    <input type="range" min="0" max="100" value="50" id="fadeSlider" oninput="updateVolumes()">
+    <br>
+    <button onclick="startAutoCrossfade()">Auto Crossfade</button>
+  </div>
+
+  <script>
+    let playerA, playerB;
+    let crossfadeInterval;
+
+    function getVideoId(url) {
+      const match = url.match(/(?:v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+      return match ? match[1] : null;
+    }
+
+    function loadVideo(deck, videoId) {
+      if (deck === 'A') {
+        playerA.loadVideoById(videoId);
+      } else {
+        playerB.loadVideoById(videoId);
+      }
+    }
+
+    function updateVolumes() {
+      const value = parseInt(document.getElementById('fadeSlider').value);
+      const volumeA = 100 - value;
+      const volumeB = value;
+      if (playerA) playerA.setVolume(volumeA);
+      if (playerB) playerB.setVolume(volumeB);
+    }
+
+    function startAutoCrossfade() {
+      let value = 0;
+      clearInterval(crossfadeInterval);
+      crossfadeInterval = setInterval(() => {
+        if (value > 100) {
+          clearInterval(crossfadeInterval);
+        } else {
+          document.getElementById('fadeSlider').value = value;
+          updateVolumes();
+          value++;
+        }
+      }, 100); // tempo entre passos (100ms = 10 segundos total)
+    }
+
+    async function searchAndLoad(deck) {
+      const query = document.getElementById('url' + deck).value;
+      const searchUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`;
+      alert("Para evitar restrições da API, cole manualmente o link do vídeo após buscar no YouTube: \n" + searchUrl);
+      window.open(searchUrl, '_blank');
+    }
+
+    function onYouTubeIframeAPIReady() {
+      playerA = new YT.Player('playerA', {
+        height: '225',
+        width: '400',
+        videoId: '',
+        playerVars: { 'autoplay': 0, 'controls': 1 },
+        events: {
+          'onReady': () => playerA.setVolume(50)
+        }
+      });
+
+      playerB = new YT.Player('playerB', {
+        height: '225',
+        width: '400',
+        videoId: '',
+        playerVars: { 'autoplay': 0, 'controls': 1 },
+        events: {
+          'onReady': () => playerB.setVolume(50)
+        }
+      });
+    }
+
+    // YouTube API script
+    const tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    document.body.appendChild(tag);
+  </script>
+</body>
+</html>
