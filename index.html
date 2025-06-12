@@ -12,112 +12,87 @@
       background-size: cover;
       color: #fff;
     }
+
     header {
       padding: 20px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: flex-start;
     }
+
     header img {
       max-width: 150px;
+      height: auto;
     }
+
     main {
       display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
+      flex-direction: column;
+      align-items: center;
       gap: 40px;
       padding: 20px;
     }
-    .deck {
-      width: 45%;
-      min-width: 300px;
-      text-align: center;
+
+    .players-container {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      gap: 40px;
+      flex-wrap: wrap;
     }
+
+    .deck {
+      text-align: center;
+      flex: 1 1 300px;
+    }
+
     .deck-label {
       font-size: 24px;
       font-weight: bold;
       margin-bottom: 10px;
     }
-    #playerA, #playerB {
+
+    iframe {
       width: 100%;
-      height: 360px;
+      max-width: 480px;
+      height: 270px;
+      border: none;
       margin-bottom: 10px;
     }
+
+    .input-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
     input[type="text"] {
       padding: 10px;
-      width: 90%;
+      width: 80%;
       max-width: 400px;
       border: none;
       border-radius: 4px;
       margin-bottom: 10px;
     }
+
     button {
-      padding: 10px 20px;
+      padding: 8px 16px;
       border: none;
       border-radius: 4px;
       background-color: #ff4081;
       color: white;
       font-size: 16px;
+      margin: 4px;
       cursor: pointer;
     }
-    .crossfade-controls {
+
+    .crossfader-container {
+      margin-top: 40px;
       text-align: center;
-      margin: 30px auto;
     }
-    .crossfade-label {
-      font-size: 18px;
-      margin-bottom: 10px;
-    }
+
     input[type="range"] {
-      -webkit-appearance: none;
-      width: 120px;
-      height: 6px;
-      background: #444;
-      border-radius: 3px;
-      outline: none;
-      margin-top: 10px;
-    }
-    input[type="range"]::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 20px;
-      height: 20px;
-      background: #ff4081;
-      border-radius: 50%;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-    input[type="range"]::-moz-range-thumb {
-      width: 20px;
-      height: 20px;
-      background: #ff4081;
-      border-radius: 50%;
-      cursor: pointer;
-    }
-    .slider-labels {
-      display: flex;
-      justify-content: space-between;
-      width: 120px;
-      margin: 5px auto 0;
-      font-size: 14px;
-      color: #ccc;
-      user-select: none;
-    }
-    .deck-controls {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      margin-top: 10px;
-    }
-    .deck-controls button {
-      background-color: #ff4081;
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      font-size: 16px;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-    .deck-controls button:hover {
-      background-color: #e73370;
+      width: 300px;
     }
   </style>
 </head>
@@ -127,131 +102,8 @@
   </header>
 
   <main>
-    <!-- Deck A -->
-    <div class="deck">
-      <div class="deck-label">Deck A</div>
-      <div id="playerA"></div>
-      <input type="text" id="youtubeLinkA" placeholder="Cole o link do vídeo do YouTube aqui">
-      <button onclick="carregarVideo('A')">Carregar</button>
-      <div class="deck-controls">
-        <button onclick="tocarVideo('A')">▶️ Play</button>
-        <button onclick="pausarVideo('A')">⏸ Pause</button>
-      </div>
-    </div>
-
-    <!-- Deck B -->
-    <div class="deck">
-      <div class="deck-label">Deck B</div>
-      <div id="playerB"></div>
-      <input type="text" id="youtubeLinkB" placeholder="Cole o link do vídeo do YouTube aqui">
-      <button onclick="carregarVideo('B')">Carregar</button>
-      <div class="deck-controls">
-        <button onclick="tocarVideo('B')">▶️ Play</button>
-        <button onclick="pausarVideo('B')">⏸ Pause</button>
-      </div>
-    </div>
-  </main>
-
-  <!-- Crossfader -->
-  <div class="crossfade-controls">
-    <div class="crossfade-label">Crossfade</div>
-    <input type="range" id="crossfader" min="0" max="100" value="50" oninput="ajustarVolumesSuave()">
-    <div class="slider-labels">
-      <span>🎵 Deck A</span>
-      <span>↔</span>
-      <span>Deck B 🎵</span>
-    </div>
-  </div>
-
-  <!-- YouTube API + Script -->
-  <script src="https://www.youtube.com/iframe_api"></script>
-  <script>
-    let playerA, playerB;
-    let volumeA = 50;
-    let volumeB = 50;
-
-    function onYouTubeIframeAPIReady() {
-      playerA = new YT.Player('playerA', {
-        height: '360',
-        width: '640',
-        videoId: '',
-        playerVars: { autoplay: 0, controls: 1 },
-        events: {
-          onReady: () => playerA.setVolume(volumeA)
-        }
-      });
-
-      playerB = new YT.Player('playerB', {
-        height: '360',
-        width: '640',
-        videoId: '',
-        playerVars: { autoplay: 0, controls: 1 },
-        events: {
-          onReady: () => playerB.setVolume(volumeB)
-        }
-      });
-    }
-
-    function carregarVideo(deck) {
-      const inputId = deck === 'A' ? 'youtubeLinkA' : 'youtubeLinkB';
-      const player = deck === 'A' ? playerA : playerB;
-      const link = document.getElementById(inputId).value;
-      const videoId = extrairVideoId(link);
-      if (videoId) {
-        player.loadVideoById(videoId);
-      } else {
-        alert('Link inválido. Use um link completo do YouTube.');
-      }
-    }
-
-    function extrairVideoId(url) {
-      const regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&#\s]+)/;
-      const match = url.match(regex);
-      return match ? match[1] : null;
-    }
-
-    function ajustarVolumesSuave() {
-      const target = parseInt(document.getElementById('crossfader').value);
-      const targetVolA = 100 - target;
-      const targetVolB = target;
-
-      const steps = 10;
-      const delay = 20;
-
-      const stepA = (targetVolA - volumeA) / steps;
-      const stepB = (targetVolB - volumeB) / steps;
-
-      let currentStep = 0;
-      const interval = setInterval(() => {
-        if (currentStep >= steps) {
-          clearInterval(interval);
-          volumeA = targetVolA;
-          volumeB = targetVolB;
-        } else {
-          volumeA += stepA;
-          volumeB += stepB;
-          playerA.setVolume(Math.round(volumeA));
-          playerB.setVolume(Math.round(volumeB));
-          currentStep++;
-        }
-      }, delay);
-    }
-
-    function tocarVideo(deck) {
-      if (deck === 'A' && playerA) {
-        playerA.playVideo();
-      } else if (deck === 'B' && playerB) {
-        playerB.playVideo();
-      }
-    }
-
-    function pausarVideo(deck) {
-      if (deck === 'A' && playerA) {
-        playerA.pauseVideo();
-      } else if (deck === 'B' && playerB) {
-        playerB.pauseVideo();
-      }
-    }
-  </script>
-</body>
-</html>
+    <div class="players-container">
+      <div class="deck">
+        <div class="deck-label">Deck A</div>
+        <iframe id="playerA"></iframe>
+        <div class="input-container">
