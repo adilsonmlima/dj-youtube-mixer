@@ -23,8 +23,31 @@
       height: auto;
     }
     main {
-      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 40px;
       padding: 20px;
+    }
+    .deck {
+      text-align: center;
+    }
+    .deck-label {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    iframe {
+      width: 100%;
+      max-width: 640px;
+      height: 360px;
+      border: none;
+      margin-bottom: 10px;
+    }
+    .input-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
     input[type="text"] {
       padding: 10px;
@@ -42,34 +65,42 @@
       color: white;
       font-size: 16px;
       cursor: pointer;
-      margin-left: 10px;
-    }
-    iframe {
-      margin-top: 20px;
-      width: 90%;
-      max-width: 640px;
-      height: 360px;
-      border: none;
     }
   </style>
 </head>
 <body>
   <header>
-    <img src="A_graphic_logo_design_features_\"DJ_YTM\"_in_a_retro.png" alt="Logo DJ YTM">
+    <img src="logo-dj-ytm.png" alt="Logo DJ YTM">
   </header>
   <main>
-    <input type="text" id="youtubeLink" placeholder="Cole o link do vídeo do YouTube aqui">
-    <button onclick="carregarVideo()">Carregar</button>
-    <div id="player"></div>
+    <div class="deck">
+      <div class="deck-label">Deck A</div>
+      <iframe id="playerA"></iframe>
+      <div class="input-container">
+        <input type="text" id="youtubeLinkA" placeholder="Cole o link do vídeo do YouTube aqui">
+        <button onclick="carregarVideo('A')">Carregar</button>
+      </div>
+    </div>
+
+    <div class="deck">
+      <div class="deck-label">Deck B</div>
+      <iframe id="playerB"></iframe>
+      <div class="input-container">
+        <input type="text" id="youtubeLinkB" placeholder="Cole o link do vídeo do YouTube aqui">
+        <button onclick="carregarVideo('B')">Carregar</button>
+      </div>
+    </div>
   </main>
 
   <script>
-    function carregarVideo() {
-      const link = document.getElementById('youtubeLink').value;
+    function carregarVideo(deck) {
+      const inputId = deck === 'A' ? 'youtubeLinkA' : 'youtubeLinkB';
+      const playerId = deck === 'A' ? 'playerA' : 'playerB';
+      const link = document.getElementById(inputId).value;
       const videoId = extrairVideoId(link);
       if (videoId) {
-        const iframe = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0" allowfullscreen allow="autoplay; encrypted-media"></iframe>`;
-        document.getElementById('player').innerHTML = iframe;
+        const iframeSrc = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+        document.getElementById(playerId).src = iframeSrc;
       } else {
         alert('Link inválido. Certifique-se de colar um link completo do YouTube.');
       }
